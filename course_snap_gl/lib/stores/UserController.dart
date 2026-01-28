@@ -1,4 +1,4 @@
-import 'package:course_snap_gl/pojo/user.dart';
+import 'package:course_snap_gl/pojo/UserInfo.dart';
 import 'package:get/get.dart';
 
 class UserController extends GetxController{

@@ -1,8 +1,8 @@
 class UserInfo {
   String name;
-  String account;
+  int account;
   String password;
-  String identity;
+  int identity;
   String token;
 
   UserInfo({
@@ -16,9 +16,9 @@ class UserInfo {
   factory UserInfo.fromJson(Map<String, dynamic> json) {
     return UserInfo(
       name: json['name'] ?? '',
-      account: json['account'] ?? '',
+      account: json['account'] ?? 00000000,
       password: json['password'] ?? '',
-      identity: json['identity'] ?? '',
+      identity: json['identity'] ?? 0,
       token: json['token'] ?? ''
     );
   }

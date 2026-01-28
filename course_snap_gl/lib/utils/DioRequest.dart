@@ -53,7 +53,7 @@ class DioRequest {
       Response<dynamic> response = await task;
       final data = response.data as Map<String, dynamic>;
       if(data['code'] == GlobalConstants.SUCCESS) {
-        return data['result'];
+        return data['data'];
       }
       throw DioException(requestOptions: response.requestOptions, message: data['msg'] ?? "加载数据错误");
     } catch (e) {

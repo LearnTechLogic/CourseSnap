@@ -1,7 +1,7 @@
 import 'package:course_snap_gl/pages/DispatchView.dart';
 import 'package:course_snap_gl/pages/MineView.dart';
 import 'package:course_snap_gl/pages/OrderView.dart';
-import 'package:course_snap_gl/pojo/user.dart';
+import 'package:course_snap_gl/pojo/UserInfo.dart';
 import 'package:course_snap_gl/stores/TokenManager.dart';
 import 'package:course_snap_gl/stores/UserController.dart';
 import 'package:flutter/cupertino.dart';
@@ -57,6 +57,11 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     _initUser();
+    if (_userController.user.value.name.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushNamed(context, "/login");
+      });
+    }
   }
   @override
   Widget build(BuildContext context) {

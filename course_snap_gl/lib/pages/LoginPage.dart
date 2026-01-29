@@ -1,5 +1,12 @@
+import 'package:course_snap_gl/stores/TokenManager.dart';
+import 'package:course_snap_gl/stores/UserController.dart';
+import 'package:course_snap_gl/utils/LoadingDialog.dart';
+import 'package:course_snap_gl/utils/ToastUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../api/login.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -9,6 +16,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final UserController _userController = Get.find();
   TextEditingController _accountController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   Widget _buildHeader() {
@@ -31,7 +39,10 @@ class _LoginPageState extends State<LoginPage> {
     return TextFormField(
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return '请输入账号';
+          return '请输入学号';
+        }
+        if (!RegExp(r"^[0-9]{8}$").hasMatch(value)){
+          return '学号格式错误';
         }
         return null;
       },
@@ -101,32 +112,66 @@ class _LoginPageState extends State<LoginPage> {
   Widget _buildButton() {
     return SizedBox(
       width: double.infinity,
-      height: 50,
+      height: 80,
       child: Flex(
         direction: Axis.horizontal,
         children: [
           Expanded(
             child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25)
+                ),
+              ),
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   if (_isChecked) {
-
+                    _login();
                   } else {
-
+                    ToastUtils.showToast(context, "请先阅读并同意用户协议");
                   }
                 }
               },
-              child: Text("登录"))
+              child: Text("登录", style: TextStyle(fontSize: 20, color: Colors.white))
+            )
           ),
+          SizedBox(width: 20),
           Expanded(
             child: ElevatedButton(
-              onPressed: () {},
-              child: Text("注册")
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, "/register");
+              },
+              child: Text("注册", style: TextStyle(fontSize: 20, color: Colors.white))
             ),
           )
         ],
       ),
     );
+  }
+
+  void _login() async {
+    try {
+      LoadingDialog.show(context, message: "登录中...");
+      final result = await loginAPI({
+        "account": _accountController.text,
+        "password": _passwordController.text
+      });
+      _userController.updateUserInfo(result);
+      tokenManager.setToken(result.token);
+      LoadingDialog.hide(context);
+      ToastUtils.showToast(context, "登录成功");
+      Navigator.pop(context);
+    }catch(e) {
+      LoadingDialog.hide(context);
+      ToastUtils.showToast(context, "登录失败");
+    }
   }
 
 

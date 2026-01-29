@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../pages/LoginPage.dart';
 import '../pages/MainPage.dart';
+import '../pages/RegisterPage.dart';
 
 Widget getRootWidget() {
   return MaterialApp(
@@ -13,6 +14,7 @@ Widget getRootWidget() {
 Map<String, Widget Function(BuildContext)> getRootRoutes() {
   return {
     '/': (context) => MainPage(),
-    '/login': (context) => LoginPage()
+    '/login': (context) => LoginPage(),
+    '/register': (context) => RegisterPage()
   };
 }

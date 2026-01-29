@@ -19,7 +19,8 @@ class DioRequest {
         onRequest: (request, handler) {
           if(tokenManager.getToken().isNotEmpty) {
             request.headers = {
-              'Authorization': 'Bearer ${tokenManager.getToken()}'
+              // 'Authorization': 'Bearer ${tokenManager.getToken()}'
+              'token': tokenManager.getToken()
             };
           }
           handler.next(request);
@@ -34,7 +35,7 @@ class DioRequest {
         },
         // 错误拦截器
         onError: (error, handler) {
-          handler.reject(DioException(requestOptions: error.requestOptions, message: error.response?.data['msg'] ?? ""));
+          handler.reject(DioException(requestOptions: error.requestOptions, message: error.response?.data['message'] ?? ""));
         }
       )
     );
@@ -55,7 +56,7 @@ class DioRequest {
       if(data['code'] == GlobalConstants.SUCCESS) {
         return data['data'];
       }
-      throw DioException(requestOptions: response.requestOptions, message: data['msg'] ?? "加载数据错误");
+      throw DioException(requestOptions: response.requestOptions, message: data['message'] ?? "加载数据错误");
     } catch (e) {
       rethrow; // 不改变原来抛出的异常类型
     }

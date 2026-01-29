@@ -2,6 +2,7 @@ import 'package:course_snap_gl/stores/TokenManager.dart';
 import 'package:course_snap_gl/stores/UserController.dart';
 import 'package:course_snap_gl/utils/LoadingDialog.dart';
 import 'package:course_snap_gl/utils/ToastUtils.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -170,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.pop(context);
     }catch(e) {
       LoadingDialog.hide(context);
-      ToastUtils.showToast(context, "登录失败");
+      ToastUtils.showToast(context, (e as DioException).message);
     }
   }
 

@@ -1,3 +1,14 @@
 spring:
   application:
     name: course_snap_backend
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://8.153.170.199:3306/course_snap?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true
+    username: course_snap
+    password: 1234..
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    #开启了驼峰命名的开关
+    map-underscore-to-camel-case: true
+#  mapper-locations: classpath:mapper/*.xml #指定mapper.xml文件的位置

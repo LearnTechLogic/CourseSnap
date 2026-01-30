@@ -6,6 +6,6 @@ class GlobalConstants {
 }
 
 class HttpConstants {
-  static const String LOGIN = "/member/login";
-  static const String USER_PROFILE = "/member/profile"; // 用户信息
+  static const String LOGIN = "/manager/login";
+  static const String USER_PROFILE = "/manager/profile"; // 用户信息
 }

@@ -1,11 +1,11 @@
-class UserInfo {
+class ManagerInfo {
   String name;
   int account;
   String password;
   int identity;
   String token;
 
-  UserInfo({
+  ManagerInfo({
     required this.name,
     required this.account,
     required this.password,
@@ -13,8 +13,8 @@ class UserInfo {
     required this.token
   });
 
-  factory UserInfo.fromJson(Map<String, dynamic> json) {
-    return UserInfo(
+  factory ManagerInfo.fromJson(Map<String, dynamic> json) {
+    return ManagerInfo(
       name: json['name'] ?? '',
       account: json['account'] ?? 00000000,
       password: json['password'] ?? '',

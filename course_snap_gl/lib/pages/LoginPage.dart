@@ -1,5 +1,5 @@
 import 'package:course_snap_gl/stores/TokenManager.dart';
-import 'package:course_snap_gl/stores/UserController.dart';
+import 'package:course_snap_gl/stores/ManagerController.dart';
 import 'package:course_snap_gl/utils/LoadingDialog.dart';
 import 'package:course_snap_gl/utils/ToastUtils.dart';
 import 'package:dio/dio.dart';
@@ -17,7 +17,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final UserController _userController = Get.find();
+  final ManagerController _managerController = Get.find();
   TextEditingController _accountController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   Widget _buildHeader() {
@@ -164,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
         "account": _accountController.text,
         "password": _passwordController.text
       });
-      _userController.updateUserInfo(result);
+      _managerController.updateManagerInfo(result);
       tokenManager.setToken(result.token);
       LoadingDialog.hide(context);
       ToastUtils.showToast(context, "登录成功");

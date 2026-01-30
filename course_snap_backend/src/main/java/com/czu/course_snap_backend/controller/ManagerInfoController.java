@@ -34,7 +34,7 @@ public class ManagerInfoController {
     }
 
     @GetMapping("/profile")
-    public Result getUserProfile() {
+    public Result getManagerProfile() {
         Map<String, Object> claims = ThreadLocalUtil.get();
         if (claims != null) {
             int account = (int) claims.get("id");
@@ -48,5 +48,16 @@ public class ManagerInfoController {
     @PostMapping("/register")
     public Result register(@RequestBody ManagerInfo managerInfo) {
         return registerService.managerRegister(managerInfo);
+    }
+
+    @GetMapping("/user")
+    public Result getUserProfile() {
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        if (claims != null) {
+            int account = (int) claims.get("id");
+            int identity = (int) claims.get("identity");
+            return profileService.getUserProfile(identity, account);
+        }
+        return Result.error("0", "请先登录");
     }
 }

@@ -27,14 +27,14 @@ class _MainPageState extends State<MainPage> {
     if (_managerController.manager.value.identity == 1) {
       _tabList.addAll([
         {
-          "text": "派单",
-          "icon": "lib/images/dispatch.png",
-          "active_icon": "lib/images/dispatch_active.png"
-        },
-        {
           "text": "订单",
           "icon": "lib/images/order.png",
           "active_icon": "lib/images/order_active.png"
+        },
+        {
+          "text": "派单",
+          "icon": "lib/images/dispatch.png",
+          "active_icon": "lib/images/dispatch_active.png"
         },
         {
           "text": "我的",
@@ -83,7 +83,7 @@ class _MainPageState extends State<MainPage> {
   }
   List<Widget> _getChildren() {
     if (_managerController.manager.value.identity == 1) {
-      return [DispatchView(), OrderView(), MineView()];
+      return [OrderView(), DispatchView(), MineView()];
     } else if (_managerController.manager.value.identity == 2) {
       return [OrderView(), MineView()];
     } else {

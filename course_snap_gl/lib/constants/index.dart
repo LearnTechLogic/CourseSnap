@@ -9,4 +9,5 @@ class HttpConstants {
   static const String MANAGER_LOGIN = "/manager/login";
   static const String MANAFER_PROFILE = "/manager/profile"; // 用户信息
   static const String MANAGER_REGISTER = "/manager/register"; // 注册
+  static const String MANAGER_USER = "/manager/user";
 }

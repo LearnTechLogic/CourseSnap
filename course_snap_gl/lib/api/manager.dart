@@ -4,6 +4,6 @@ import 'package:course_snap_gl/utils/DioRequest.dart';
 
 Future<ManagerInfo> getManagerInfoAPI() async {
   return ManagerInfo.fromJson(
-    await dioRequest.get(HttpConstants.USER_PROFILE)
+    await dioRequest.get(HttpConstants.MANAFER_PROFILE)
   );
 }

@@ -160,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
   void _login() async {
     try {
       LoadingDialog.show(context, message: "登录中...");
-      final result = await loginAPI({
+      final result = await managerLoginAPI({
         "account": _accountController.text,
         "password": _passwordController.text
       });

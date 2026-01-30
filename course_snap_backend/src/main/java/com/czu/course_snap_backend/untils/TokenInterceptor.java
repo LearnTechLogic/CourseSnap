@@ -19,7 +19,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         log.info("请求的url: {}", url);
 
         //2. 判断请求url中是否包含login，如果包含，说明是登录操作，放行。
-        if(url.contains("login")){ //登录请求
+        if(url.contains("login") || url.contains("register")){ //登录请求
             log.info("登录请求 , 直接放行");
             return true;
         }

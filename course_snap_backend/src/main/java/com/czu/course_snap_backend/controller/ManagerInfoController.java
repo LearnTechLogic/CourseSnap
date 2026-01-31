@@ -3,6 +3,7 @@ package com.czu.course_snap_backend.controller;
 import com.czu.course_snap_backend.pojo.Login;
 import com.czu.course_snap_backend.pojo.ManagerInfo;
 import com.czu.course_snap_backend.pojo.Result;
+import com.czu.course_snap_backend.pojo.UserInfo;
 import com.czu.course_snap_backend.service.LoginService;
 import com.czu.course_snap_backend.service.ProfileService;
 import com.czu.course_snap_backend.service.RegisterService;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.plaf.PanelUI;
 import java.util.Map;
 
 @Slf4j
@@ -60,4 +62,25 @@ public class ManagerInfoController {
         }
         return Result.error("0", "请先登录");
     }
+    @GetMapping("/user/account")
+    public Result getUserProfile(@RequestParam("account") String account) {
+        if (account != null) {
+            int account_int = Integer.parseInt(account);
+            return profileService.getUserProfile(account_int);
+        }
+        return Result.error("0", "请先登录");
+    }
+    @PostMapping("/user/update")
+    public Result updateUserProfile(@RequestBody UserInfo userInfo) {
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        if (claims != null) {
+            int account = (int) claims.get("id");
+            int identity = (int) claims.get("identity");
+            if (identity == 1 || identity == 2) {
+                return profileService.updateUserProfile(userInfo);
+            }
+        }
+        return Result.error("0", "请先登录");
+    }
+
 }

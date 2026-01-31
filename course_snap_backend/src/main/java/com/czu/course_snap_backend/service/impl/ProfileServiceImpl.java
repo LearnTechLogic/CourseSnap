@@ -25,7 +25,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public Result getUserProfile(int identity, int account) {
-        if (identity == 1) {
+        if (identity == 1 || identity == 2) {
             List<UserInfo> userInfo = profileMapper.getUserProfile();
             if (userInfo == null) {
                 return Result.error("0", "用户不存在");
@@ -33,5 +33,23 @@ public class ProfileServiceImpl implements ProfileService {
             return Result.success(userInfo);
         }
         return Result.error("0", "权限不足");
+    }
+
+    @Override
+    public Result getUserProfile(int account) {
+        UserInfo userInfo = profileMapper.getUserProfileById(account);
+        if (userInfo == null) {
+            return Result.error("0", "用户不存在");
+        }
+        return Result.success(userInfo);
+    }
+
+    @Override
+    public Result updateUserProfile(UserInfo userInfo) {
+        int update = profileMapper.updateUserProfile(userInfo);
+        if (update == 0) {
+            return Result.error("0", "更新失败");
+        }
+        return Result.success();
     }
 }

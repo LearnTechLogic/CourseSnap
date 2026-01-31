@@ -25,8 +25,6 @@ class _OrderViewState extends State<OrderView> {
     _userList = await getUserInfoAPI();
     _isLoading = false;
     setState(() {});
-    List.generate(_userList.length, (int  index) {
-    });
   }
   final List<String> _states = ['申请', '等待', '进行中', '完成', '未支付', '已支付', '拒绝'];
   List<DropdownMenuItem<String>> _buildDropdownItems() {
@@ -184,6 +182,29 @@ class _OrderViewState extends State<OrderView> {
     }
   }
 
+  Future<void> _deleteUser(BuildContext context, int account) async {
+    try {
+      // 删除用户
+      await deleteUserInfoAPI(account);
+      // 删除成功，提示并刷新列表
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("用户已删除")),
+        );
+      }
+      // 删除成功，从列表中移除该用户
+      setState(() {
+        _getUserList();
+      });
+    } catch (e) {
+      // 删除失败，提示并保持列表不变
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("删除用户失败：$e")),
+        );
+      }
+    }
+  }
 
 
   Widget _buildListItem() {
@@ -197,15 +218,29 @@ class _OrderViewState extends State<OrderView> {
         itemBuilder: (BuildContext context, int index) {
           return Container(
             color: Colors.grey[100], // 浅灰色更美观，避免深灰太刺眼
-            child: ListTile(
-                selected: true,
-                title: Text("学号：${_userList[index].account}"),
-                subtitle: Text("姓名：${_userList[index].name}"),
-                trailing: Text("状态：${_userList[index].state}"),
-                onTap: () {
-                  _getUserDetail(context, _userList[index].account);
-                }
-            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: ListTile(
+                    selected: true,
+                    title: Text("学号：${_userList[index].account}"),
+                    subtitle: Text("姓名：${_userList[index].name}"),
+                    trailing: Text("状态：${_userList[index].state}"),
+                    onTap: () {
+                      _getUserDetail(context, _userList[index].account);
+                    }
+                  )
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete),
+                  color: Colors.red,
+                  onPressed: () {
+                    _deleteUser(context, _userList[index].account);
+                  }
+                ),
+
+              ]
+            )
           );
         },
         separatorBuilder: (BuildContext context, int index) {

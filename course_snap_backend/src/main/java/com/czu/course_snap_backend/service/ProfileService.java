@@ -8,4 +8,6 @@ public interface ProfileService {
     Result getUserProfile(int identity, int account);
     Result getUserProfile(int account);
     Result updateUserProfile(UserInfo userInfo);
+    Result getManagerProfileList(int identity);
+    Result deleteUserProfile(int accountInt, int identity);
 }

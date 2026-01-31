@@ -26,4 +26,13 @@ public interface ProfileMapper {
 
     @Update("update user_info set name = #{name}, price = #{price}, state = #{state}, requirement = #{requirement}, qq = #{qq} where account = #{account}")
     int updateUserProfile(UserInfo userInfo);
+
+    @Select("select * from manager_info")
+    List<ManagerInfo> getManagerProfileList();
+
+    @Update("delete from user_info where account = #{account}")
+    int deleteUserProfile(int account);
+
+    @Update("delete from allocation_details where user_account = #{account}")
+    int deleteAllocationDetails(int account);
 }

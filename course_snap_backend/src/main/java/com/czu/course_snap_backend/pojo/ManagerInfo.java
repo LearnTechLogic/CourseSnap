@@ -13,4 +13,6 @@ public class ManagerInfo {
     String password;
     int identity;
     String token;
+    int doing;
+    int done;
 }

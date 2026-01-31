@@ -14,6 +14,15 @@ Future<UserInfo> getUserInfoByIdAPI(int account) async {
   );
 }
 
- Future<bool> updateUserInfoAPI(Map<String, dynamic> userInfo) async {
-   return await dioRequest.post(HttpConstants.MANAGER_USER_UPDATE, data: userInfo);
+Future<bool> updateUserInfoAPI(Map<String, dynamic> userInfo) async {
+ return await dioRequest.post(HttpConstants.MANAGER_USER_UPDATE, data: userInfo);
+}
+
+ Future<bool> deleteUserInfoAPI(int account) async {
+   var result = await dioRequest.delete(HttpConstants.MANAGER_USER_DELETE, params: {"account": account});
+   if (result == null) {
+     return true;
+   } else {
+     return false;
+   }
  }

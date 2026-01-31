@@ -46,6 +46,15 @@ public class ManagerInfoController {
         log.warn("获取用户信息,未携带token");
         return Result.error("0", "请先登录");
     }
+    @GetMapping("/profile/list")
+    public Result getManagerProfileList() {
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        if (claims != null) {
+            int identity = (int) claims.get("identity");
+            return profileService.getManagerProfileList(identity);
+        }
+        return Result.error("0", "请先登录");
+    }
 
     @PostMapping("/register")
     public Result register(@RequestBody ManagerInfo managerInfo) {
@@ -85,4 +94,18 @@ public class ManagerInfoController {
         return Result.error("0", "请先登录");
     }
 
+    @DeleteMapping("/user/delete")
+    public Result deleteUserProfile(@RequestParam("account") String account) {
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        if (claims != null) {
+            int identity = (int) claims.get("identity");
+            if (identity == 1 || identity == 2) {
+                int account_int = Integer.parseInt(account);
+                return profileService.deleteUserProfile(account_int, identity);
+            } else {
+                return Result.error("0", "权限不足");
+            }
+        }
+        return Result.error("0", "请先登录");
+    }
 }

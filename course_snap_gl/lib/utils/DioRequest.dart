@@ -47,6 +47,9 @@ class DioRequest {
   Future<dynamic> post(String url, {Map<String, dynamic>? data}) {
     return _handleResponse(_dio.post(url, data: data));
   }
+  Future<dynamic> delete(String url, {Map<String, dynamic>? params}) {
+    return _handleResponse(_dio.delete(url, queryParameters: params));
+  }
 
 
   Future<dynamic> _handleResponse(Future<Response<dynamic>> task) async {

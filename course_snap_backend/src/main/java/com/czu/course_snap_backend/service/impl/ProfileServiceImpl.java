@@ -25,6 +25,36 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    public Result getManagerProfileList(int identity) {
+        if (identity == 1) {
+            List<ManagerInfo> managerInfos = profileMapper.getManagerProfileList();
+            List<UserInfo> userInfos;
+            int doing = 0;
+            int done = 0;
+            if (managerInfos == null) {
+                return Result.error("0", "用户不存在");
+            }
+            for (ManagerInfo managerInfo : managerInfos) {
+                userInfos = profileMapper.getUserProfile(managerInfo.getAccount());
+                for (UserInfo userInfo : userInfos) {
+                    if ("已支付".equals(userInfo.getState())) {
+                        done ++;
+                    } else {
+                        doing ++;
+                    }
+                }
+                managerInfo.setDoing(doing);
+                managerInfo.setDone(done);
+                doing = 0;
+                done = 0;
+            }
+            return Result.success(managerInfos);
+        } else {
+            return Result.error("0", "权限不足");
+        }
+    }
+
+    @Override
     public Result getUserProfile(int identity, int account) {
         if (identity == 1) {
             List<UserInfo> userInfo = profileMapper.getUsersProfile();
@@ -67,5 +97,26 @@ public class ProfileServiceImpl implements ProfileService {
             return Result.error("0", "更新失败");
         }
         return Result.success();
+    }
+
+    @Override
+    public Result deleteUserProfile(int accountInt, int identity) {
+        if (identity == 1) {
+            UserInfo userInfo = profileMapper.getUserProfileById(accountInt);
+            int delete = profileMapper.deleteUserProfile(accountInt);
+            if (delete == 0) {
+                return Result.error("0", "删除失败");
+            }
+            return Result.success();
+        } else if (identity == 2) {
+            UserInfo userInfo = profileMapper.getUserProfileById(accountInt);
+            int delete = profileMapper.deleteAllocationDetails(accountInt);
+            if (delete == 0) {
+                return Result.error("0", "删除失败");
+            }
+            return Result.success();
+        } else {
+            return Result.error("0", "权限不足");
+        }
     }
 }

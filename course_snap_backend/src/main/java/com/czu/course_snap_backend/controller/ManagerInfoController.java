@@ -78,6 +78,8 @@ public class ManagerInfoController {
             int identity = (int) claims.get("identity");
             if (identity == 1 || identity == 2) {
                 return profileService.updateUserProfile(userInfo);
+            } else {
+                return Result.error("0", "权限不足");
             }
         }
         return Result.error("0", "请先登录");

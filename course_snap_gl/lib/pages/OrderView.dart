@@ -110,6 +110,7 @@ class _OrderViewState extends State<OrderView> {
                 const SizedBox(height: 8),
                 TextField(
                   controller: requirementController,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     labelText: '需求',
                     border: OutlineInputBorder(),

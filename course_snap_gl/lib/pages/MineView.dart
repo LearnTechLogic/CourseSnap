@@ -1,7 +1,11 @@
+import 'dart:math';
+
+import 'package:course_snap_gl/pojo/UserInfo.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../api/manager.dart';
 import '../pojo/ManagerInfo.dart';
 import '../stores/ManagerController.dart';
 import '../stores/TokenManager.dart';
@@ -15,6 +19,28 @@ class MineView extends StatefulWidget {
 
 class _MineViewState extends State<MineView> {
   final ManagerController _managerController = Get.find();
+  int _price = 0;
+  List<UserInfo> users = [];
+  bool isLoading = false;
+  Future<void> _getUsers() async {
+    isLoading = true;
+    _price = 0;
+    try {
+      users = await getUserPaidAPI();
+      List.generate(users.length, (int index) {
+        _price += users[index].price;
+      });
+    } catch (e) {
+      print(e);
+    }finally {
+      isLoading = false;
+      setState(() {});
+    }
+  }
+
+  void refreshData() async {
+    _getUsers();
+  }
 
   Widget _buildHeader() {
     return Container(
@@ -90,6 +116,39 @@ class _MineViewState extends State<MineView> {
      );
    }
 
+   Widget _buildBody() {
+    if (isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    if (users.isEmpty) {
+      return const Center(
+        child: Text('暂无数据'),
+      );
+    }
+    return Expanded(
+      child: ListView.separated(
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+            title: Text("姓名：${users[index].name}"),
+            subtitle: Text("学号：${users[index].account.toString()}"),
+            trailing: Text(users[index].price.toString()),
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) {
+          return Container(height: 2, color: Colors.amber);
+        },
+        itemCount: users.length,
+      )
+    );
+   }
+
+   @override
+   void initState() {
+     super.initState();
+     refreshData();
+   }
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +160,9 @@ class _MineViewState extends State<MineView> {
           _buildHeader(),
           // 创建分割线
           _buildDivider(),
+          Text('总金额：${_price}', style: const TextStyle(fontSize: 20)),
+          _buildDivider(),
+          _buildBody(),
         ]
       ),
     );

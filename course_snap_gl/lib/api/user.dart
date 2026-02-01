@@ -8,10 +8,21 @@ Future<List<UserInfo>> getUserInfoAPI() async {
     }).toList();
 }
 
+Future<List<UserInfo>> getUserWaitingAPI() async {
+  return ((await dioRequest.get(HttpConstants.MANAGER_USER_WAITING)) as List).map((item) {
+    return UserInfo.fromJson(item as Map<String, dynamic>);
+  }).toList();
+}
+
 Future<UserInfo> getUserInfoByIdAPI(int account) async {
   return UserInfo.fromJson(
       await dioRequest.get(HttpConstants.MANAGER_USER_ID, params: {"account": account})
   );
+}
+Future<List<UserInfo>> getUserInfoByManagerAPI(int managerId) async {
+  return ((await dioRequest.get(HttpConstants.MANAGER_USER_MANAGER, params: {"managerId": managerId})) as List).map((item) {
+    return UserInfo.fromJson(item as Map<String, dynamic>);
+  }).toList();
 }
 
 Future<bool> updateUserInfoAPI(Map<String, dynamic> userInfo) async {

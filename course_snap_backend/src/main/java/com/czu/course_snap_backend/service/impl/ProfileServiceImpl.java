@@ -82,6 +82,15 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    public Result getUserWaitingProfile() {
+        List<UserInfo> userInfo = profileMapper.getUsersProfile();
+        // 判断状态等于 "name" 时移除
+        // 常量放前面，避免空指针
+        // 使用迭代器的 remove 方法，安全移除
+        userInfo.removeIf(userInfo1 -> !"等待".equals(userInfo1.getState()));
+        return Result.success(userInfo);
+    }
+    @Override
     public Result getUserProfile(int account) {
         UserInfo userInfo = profileMapper.getUserProfileById(account);
         if (userInfo == null) {
@@ -118,5 +127,31 @@ public class ProfileServiceImpl implements ProfileService {
         } else {
             return Result.error("0", "权限不足");
         }
+    }
+
+    @Override
+    public Result updateManagerProfile(ManagerInfo managerInfo) {
+        int update = profileMapper.updateManagerProfile(managerInfo);
+        if (update == 0) {
+            return Result.error("0", "更新失败");
+        }
+        return Result.success();
+    }
+
+    @Override
+    public Result updateAllocation(int managerAccount, int userAccount) {
+        int updateAllocation = profileMapper.updateAllocation(managerAccount, userAccount);
+        int updateState = profileMapper.updateState(userAccount, "进行中");
+        if (updateAllocation == 0 || updateState == 0) {
+            return Result.error("0", "更新失败");
+        }
+        return Result.success();
+    }
+
+    @Override
+    public Result getUserPaid(int account) {
+        List<UserInfo> userInfo = profileMapper.getUserProfile(account);
+        userInfo.removeIf(userInfo1 -> !"已支付".equals(userInfo1.getState()));
+        return Result.success(userInfo);
     }
 }

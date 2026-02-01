@@ -3,6 +3,7 @@ package com.czu.course_snap_backend.mapper;
 import com.czu.course_snap_backend.pojo.ManagerInfo;
 import com.czu.course_snap_backend.pojo.UserInfo;
 import org.apache.catalina.User;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -35,4 +36,14 @@ public interface ProfileMapper {
 
     @Update("delete from allocation_details where user_account = #{account}")
     int deleteAllocationDetails(int account);
+
+    @Update("update manager_info set identity = #{identity}, password = #{password} where account = #{account}")
+    int updateManagerProfile(ManagerInfo managerInfo);
+
+//    @Update("update allocation_details set manager_account = #{managerAccount}, user_account = #{userAccount}")
+   @Insert("insert into allocation_details(manager_account, user_account) values(#{managerAccount}, #{userAccount})")
+    int updateAllocation(int managerAccount, int userAccount);
+
+    @Update("update user_info set state = #{state} where account = #{account}")
+    int updateState(int account, String state);
 }

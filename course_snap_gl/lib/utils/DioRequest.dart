@@ -50,6 +50,9 @@ class DioRequest {
   Future<dynamic> delete(String url, {Map<String, dynamic>? params}) {
     return _handleResponse(_dio.delete(url, queryParameters: params));
   }
+  Future<dynamic> postImage(String url, FormData formData) {
+    return _handleResponse(_dio.post(url, data: formData));
+  }
 
 
   Future<dynamic> _handleResponse(Future<Response<dynamic>> task) async {

@@ -6,6 +6,8 @@ class UserInfo {
   String state;
   String requirement;
   int qq;
+  String image1;
+  String image2;
 
   UserInfo({
     required this.account,
@@ -15,6 +17,8 @@ class UserInfo {
     required this.state,
     required this.requirement,
     required this.qq,
+    required this.image1,
+    required this.image2,
   });
 
   factory UserInfo.fromJson(Map<String, dynamic> json) {
@@ -26,6 +30,8 @@ class UserInfo {
       state: json['state'] ?? 0,
       requirement: json['requirement'] ?? '',
       qq: json['qq'] ?? 0,
+      image1: json['images1'] ?? '',
+      image2: json['images2'] ?? '',
     );
   }
 }

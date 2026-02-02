@@ -1,6 +1,9 @@
 spring:
   application:
     name: course_snap_backend
+  servlet:
+    multipart:
+      max-file-size: 10MB
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://8.153.170.199:3306/course_snap?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true

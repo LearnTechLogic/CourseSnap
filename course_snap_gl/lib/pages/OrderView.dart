@@ -1,3 +1,4 @@
+import 'package:course_snap_gl/api/image.dart';
 import 'package:course_snap_gl/api/user.dart';
 import 'package:course_snap_gl/pojo/UserInfo.dart';
 import 'package:course_snap_gl/stores/ManagerController.dart';
@@ -5,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../utils/LoadingDialog.dart';
 import '../utils/ToastUtils.dart';
@@ -26,7 +28,75 @@ class _OrderViewState extends State<OrderView> {
     _isLoading = false;
     setState(() {});
   }
-  final List<String> _states = ['申请', '等待', '进行中', '完成', '未支付', '已支付', '拒绝'];
+  Future<void> _pickImage(int account, int imageNum) async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+    if (image != null) {
+      try {
+        LoadingDialog.show(context, message: "上传中...");
+        await postImageAPI(image, account, imageNum);
+        LoadingDialog.hide(context);
+        ToastUtils.showToast(context, "上传成功");
+        _getUserList();
+      } catch (e) {
+        LoadingDialog.hide(context);
+        ToastUtils.showToast(context, (e as DioException).message);
+      }
+    }
+  }
+
+  // 上传图片
+  Widget _buildImageUp(UserInfo userInfo) {
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            children: [
+              userInfo.image1.isNotEmpty ?
+                Image.network(
+                  userInfo.image1,
+                  width: 100,
+                  height: 100,
+                ) :
+                  Text(''),
+              SizedBox(height: 8),
+                // Text(""),
+              ElevatedButton(
+                onPressed: () {
+                  _pickImage(userInfo.account, 1);
+                },
+                child: Text("上传图片")
+              )
+            ],
+          )
+        ),
+        Expanded(
+          child: Column(
+            children: [
+              userInfo.image2.isNotEmpty ?
+                Image.network(
+                  userInfo.image2,
+                  width: 100,
+                  height: 100,
+                ) :
+                  Text(''),
+              SizedBox(height: 8),
+                // Text(""),
+              ElevatedButton(
+                onPressed: () {
+                  _pickImage(userInfo.account, 2);
+                },
+                child: Text("上传图片")
+              )
+            ]
+          )
+        )
+      ],
+    );
+  }
+  
+  
+  final List<String> _states = ['申请', '等待', '进行中', '未支付', '已支付', '完成', '拒绝'];
   List<DropdownMenuItem<String>> _buildDropdownItems() {
     return _states
         .map((String option) => DropdownMenuItem<String>(
@@ -134,7 +204,10 @@ class _OrderViewState extends State<OrderView> {
                   items: _buildDropdownItems(),
                   onChanged: (String? newValue) {
                     stateController.text = newValue!;
-                  })
+                  }
+                ),
+                const SizedBox(height: 8),
+                _buildImageUp(userInfo)
               ],
             ),
           ),

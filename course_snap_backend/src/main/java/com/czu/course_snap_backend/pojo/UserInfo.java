@@ -15,4 +15,6 @@ public class UserInfo {
     String state;
     String requirement;
     int qq;
+    String image1;
+    String image2;
 }

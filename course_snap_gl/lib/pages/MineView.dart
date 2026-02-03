@@ -105,7 +105,7 @@ class _MineViewState extends State<MineView> {
       )
     );
    }
-   Widget _buildDivider() {
+  Widget _buildDivider() {
      return Container(
        padding: const EdgeInsets.only(left: 20, right: 20),
        child: const Divider(
@@ -115,8 +115,7 @@ class _MineViewState extends State<MineView> {
        ),
      );
    }
-
-   Widget _buildBody() {
+  Widget _buildBody() {
     if (isLoading) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -144,11 +143,11 @@ class _MineViewState extends State<MineView> {
     );
    }
 
-   @override
-   void initState() {
-     super.initState();
-     refreshData();
-   }
+  @override
+  void initState() {
+   super.initState();
+   refreshData();
+  }
 
   @override
   Widget build(BuildContext context) {

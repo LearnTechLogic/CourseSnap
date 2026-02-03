@@ -17,4 +17,5 @@ public class UserInfo {
     int qq;
     String image1;
     String image2;
+    String token;
 }

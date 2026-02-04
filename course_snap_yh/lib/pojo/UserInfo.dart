@@ -5,7 +5,7 @@ class UserInfo {
   int price;
   String state;
   String requirement;
-  int qq;
+  String qq;
   String image1;
   String image2;
   String token;
@@ -31,7 +31,7 @@ class UserInfo {
       price: json['price'] ?? 0,
       state: json['state'] ?? "等待",
       requirement: json['requirement'] ?? '',
-      qq: json['qq'] ?? 0,
+      qq: json['qq'] ?? '',
       image1: json['images1'] ?? '',
       image2: json['images2'] ?? '',
       token: json['token'] ?? '',

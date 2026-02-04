@@ -17,3 +17,15 @@ Future<UserInfo> userInfoAPI() async {
     await dioRequest.get(HttpConstants.USER_INFO)
   );
 }
+
+Future<UserInfo> userUpdateAPI(Map<String, dynamic> user) async {
+  return UserInfo.fromJson(
+    await dioRequest.post(HttpConstants.USER_UPDATE, data: user)
+  );
+}
+
+Future<UserInfo> userApplyAPI(Map<String, dynamic> user) async {
+  return UserInfo.fromJson(
+    await dioRequest.post(HttpConstants.USER_APPLY, data: user)
+  );
+}

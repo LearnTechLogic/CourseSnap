@@ -18,9 +18,12 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
     @Override
     public Result login(int account, String password) {
+        if (getUserInfo(account) == null) {
+            return Result.error("0", "用户不存在");
+        }
         UserInfo userInfo = userMapper.login(account, password);
         if (userInfo == null) {
-            return Result.error("400", "用户不存在");
+            return Result.error("0", "账号密码错误");
         }
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("account", userInfo.getAccount());
@@ -46,5 +49,36 @@ public class UserServiceImpl implements UserService {
             return Result.error("400", "用户不存在");
         }
         return Result.success(userInfo);
+    }
+    @Override
+    public Result updateUserInfo(UserInfo userInfo) {
+        if (userMapper.getUserInfo(userInfo.getAccount()).getState().equals("已支付")) {
+            return Result.error("0", "已支付不支持修改");
+        }
+        int i = userMapper.updateUserInfo(userInfo.getAccount(), userInfo.getName(), userInfo.getPassword(), userInfo.getPrice(), userInfo.getRequirement(), userInfo.getQq());
+        if (i == 1) {
+            return Result.success(userMapper.getUserInfo(userInfo.getAccount()));
+        }
+        return Result.error("400", "更新失败");
+    }
+    @Override
+    public Result applyUserInfo(UserInfo userInfo) {
+        UserInfo _userInfo = userMapper.getUserInfo(userInfo.getAccount());
+        if (_userInfo.getPassword() == null) {
+            return Result.error("0", "用户不存在");
+        }
+        if (userMapper.getUserInfo(userInfo.getAccount()).getState().equals("已支付")) {
+            return Result.error("0", "只支付不支持修改");
+        }
+        int j = userMapper.updateUserInfo(userInfo.getAccount(),userInfo.getName(), userInfo.getPassword(), userInfo.getPrice(), userInfo.getRequirement(), userInfo.getQq());
+        if (j != 1) {
+            return Result.error("0", "更新失败");
+        }
+        int i = userMapper.applyUserInfo(userInfo.getAccount(), "申请");
+        if (i == 1) {
+            userInfo = userMapper.getUserInfo(userInfo.getAccount());
+            return Result.success(userInfo);
+        }
+        return Result.error("0", "申请失败");
     }
 }

@@ -11,4 +11,8 @@ class HttpConstants {
   static const String USER_REGISTER = "user/register";
 
   static const String USER_INFO = "/user/info";
+
+  static const String USER_UPDATE = "/user/update";
+
+  static const String USER_APPLY = "/user/apply";
 }

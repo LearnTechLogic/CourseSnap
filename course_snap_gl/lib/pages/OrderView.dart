@@ -96,7 +96,7 @@ class _OrderViewState extends State<OrderView> {
   }
   
   
-  final List<String> _states = ['申请', '等待', '进行中', '未支付', '已支付', '完成', '拒绝'];
+  final List<String> _states = ['仅注册', '申请', '等待', '进行中', '未支付', '已支付', '拒绝'];
   List<DropdownMenuItem<String>> _buildDropdownItems() {
     return _states
         .map((String option) => DropdownMenuItem<String>(

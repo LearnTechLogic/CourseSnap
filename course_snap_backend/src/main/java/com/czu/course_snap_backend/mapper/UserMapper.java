@@ -4,6 +4,7 @@ import com.czu.course_snap_backend.pojo.UserInfo;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface UserMapper {
@@ -18,4 +19,11 @@ public interface UserMapper {
 
     @Insert("insert into user_info (account, password, state) values(#{account},#{password},#{state})")
     int register(int account, String password, String state);
+
+    @Update("update user_info set name=#{password},password=#{password},price=#{price},requirement=#{requirement},qq=#{qq} where account=#{account}")
+    int updateUserInfo(int account, String name, String password, int price, String requirement, String qq);
+
+    @Insert("update user_info set state=#{state} where account=#{account}")
+    int applyUserInfo(int account, String state);
+
 }

@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:course_snap_yh/api/index.dart';
 import 'package:course_snap_yh/stores/UserController.dart';
 import 'package:course_snap_yh/utils/ToastUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 
 import '../pojo/UserInfo.dart';
 import '../stores/TokenManager.dart';
@@ -41,7 +44,7 @@ class _MineViewState extends State<MineView> {
     setState(() {});
   }
 
-  final GlobalKey _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Widget _buildHeader() {
     return Container(
@@ -129,6 +132,8 @@ class _MineViewState extends State<MineView> {
           _buildTextField("密码", _passwordController),
           _buildTextField("价格", _priceController),
           _buildTextField("QQ", _qqController),
+          _buildTextField("需求", _requirementController),
+          _buildState()
         ]
       )
     );
@@ -161,6 +166,10 @@ class _MineViewState extends State<MineView> {
                 if (value == null || value.isEmpty) {
                   return "请输入价格";
                 }
+                final price = int.tryParse(value);
+                if (price! < 20) {
+                  return "价格最低为20";
+                }
                 if (!RegExp(r'^[1-9]\d*$').hasMatch(value)) {
                   return "请输入正确的价格";
                 }
@@ -188,6 +197,179 @@ class _MineViewState extends State<MineView> {
 
   }
 
+  Widget _buildButton() {
+    return Obx(() {
+      return Row(
+        children: [
+          _userController.user.value.state == "拒绝" || _userController.user.value.state == "申请" || _userController.user.value.state == "仅注册" || _userController.user.value.state == "等待" || _userController.user.value.state == "进行中"?
+            Expanded(
+                child: GestureDetector(
+                    onTap: ()  {
+                      if (_formKey.currentState!.validate()) {
+                        _update();
+                      }
+                    },
+                    child: Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(25)
+                        ),
+                        child: Text(
+                          "修改个人信息",
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                          textAlign: TextAlign.center,
+                        )
+                    )
+                )
+            )
+          : Text(""),
+          const SizedBox(width: 20),
+          _userController.user.value.state == "拒绝" ||  _userController.user.value.state == "仅注册"?
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  if (_formKey.currentState!.validate()) {
+                    _apply();
+                  }
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(25)
+                  ),
+                  child: Text(
+                    "提交抢课申请",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    textAlign: TextAlign.center,
+                  )
+                )
+              )
+            )
+          : Text("")
+        ]
+      );
+
+    });
+  }
+
+  Widget _buildState() {
+    if (_userController.user.value.state == "已支付") {
+      return Row(
+        children: [
+          Expanded(
+            child: Image.network(
+              _userController.user.value.image1,
+              fit: BoxFit.cover,
+              width: 100,
+              height: 100,
+            ),
+          ),
+          Expanded(
+            child: Image.network(
+              _userController.user.value.image2,
+              fit: BoxFit.cover,
+              width: 100,
+              height: 100,
+            )
+          )
+        ]
+      );
+    }else if (_userController.user.value.state == "拒绝") {
+      return Text("提供的信息存在错误，请联系管理员");
+    }else if (_userController.user.value.state == "进行中") {
+      return Row(
+        children: [
+          Expanded(
+            child: Text(
+              "正在抢课中请稍等",
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center
+            )
+          )
+        ]
+      );
+    }else if (_userController.user.value.state == "未支付") {
+      return Row(
+        children: [
+          Expanded(
+            child: Text(
+              "抢课已完成，请联系管理员支付抢课费用",
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center
+            )
+          )
+        ]
+      );
+    }else if (_userController.user.value.state == "申请") {
+      return Row(
+        children: [
+          Expanded(
+            child: Text(
+              "申请已提交请耐心等待管理员审核",
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center
+            )
+          )
+        ]
+      );
+    }else if (_userController.user.value.state == "仅注册") {
+      return Row(
+        children: [
+          Expanded(
+            child: Text(
+              "仅注册成功，请修改信息，并提交抢课申请",
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center
+            )
+          )
+        ]
+      );
+    }else {
+      return Row(
+        children: [
+          Expanded(
+            child: Text(
+              "抢课正在进行中请稍等",
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center
+            )
+          )
+        ]
+      );
+    }
+  }
+
+  void _update() async {
+    final price = int.tryParse(_priceController.text);
+    Map<String, dynamic> data = {
+      "account": _userController.user.value.account,
+      "name": _nameController.text,
+      "password": _passwordController.text,
+      "price": price,
+      "qq": _qqController.text,
+      "requirement": _requirementController.text
+    };
+    _userInfo = await userUpdateAPI(data);
+    _userController.updateUserInfo(_userInfo);
+    refreshData();
+  }
+
+  void _apply() async {
+    final price = int.tryParse(_priceController.text);
+    Map<String, dynamic> data = {
+      "account": _userController.user.value.account,
+      "name": _nameController.text,
+      "password": _passwordController.text,
+      "price": price,
+      "qq": _qqController.text,
+      "requirement": _requirementController.text
+    };
+    _userInfo = await userApplyAPI(data);
+    _userController.updateUserInfo(_userInfo);
+    refreshData();
+  }
   @override
   void initState() {
     super.initState();
@@ -209,16 +391,21 @@ class _MineViewState extends State<MineView> {
   }
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      child: Column(         
-        children: [
-          _buildHeader(),
-          _buildDivider(),
-          _buildBody()
-
-        ]
-      )
+    return ListView(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+          children: [
+            _buildHeader(),
+            _buildDivider(),
+            _buildBody(),
+            SizedBox(height: 20),
+            _buildButton(),
+          ]
+          )
+        )
+      ]
     );
   }
 }

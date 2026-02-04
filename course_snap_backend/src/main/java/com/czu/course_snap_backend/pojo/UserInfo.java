@@ -14,7 +14,7 @@ public class UserInfo {
     int price;
     String state;
     String requirement;
-    int qq;
+    String qq;
     String image1;
     String image2;
     String token;

@@ -9,4 +9,8 @@ public interface UserService {
     Result register(UserInfo userInfo);
 
     Result getUserInfo(int account);
+
+    Result updateUserInfo(UserInfo userInfo);
+
+    Result applyUserInfo(UserInfo userInfo);
 }

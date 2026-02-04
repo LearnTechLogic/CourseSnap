@@ -1,5 +1,6 @@
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 import '../constants/index.dart';
 import '../stores/TokenManager.dart';
@@ -10,7 +11,7 @@ class DioRequest {
     _dio.options
         ..baseUrl = GlobalConstants.BASE_URL
         ..connectTimeout = Duration(seconds: GlobalConstants.TIME_OUT)
-        ..sendTimeout = Duration(seconds: GlobalConstants.TIME_OUT);
+        ..sendTimeout = kIsWeb ? null : Duration(seconds: GlobalConstants.TIME_OUT);
     // 拦截器
     _addInterceptors();
   }

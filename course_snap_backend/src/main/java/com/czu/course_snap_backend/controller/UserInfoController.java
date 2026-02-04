@@ -39,4 +39,22 @@ public class UserInfoController {
         }
         return Result.error("0", "请先登录");
     }
+
+    @PostMapping("/update")
+    public Result updateUserInfo(@RequestBody UserInfo userInfo) {
+        return userService.updateUserInfo(userInfo);
+    }
+
+    @PostMapping("/apply")
+    public Result applyUserInfo(@RequestBody UserInfo userInfo) {
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        if (claims != null) {
+            int account = (int) claims.get("account");
+            if (account != userInfo.getAccount()) {
+                return Result.error("0", "请勿修改账号");
+            }
+            return userService.applyUserInfo(userInfo);
+        }
+        return Result.error("0", "请先登录");
+    }
 }

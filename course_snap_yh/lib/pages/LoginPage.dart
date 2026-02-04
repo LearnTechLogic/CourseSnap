@@ -158,7 +158,16 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.pop(context);
     }catch(e) {
       LoadingDialog.hide(context);
-      ToastUtils.showToast(context, (e as DioException).message);
+      String errorMsg = "登录失败，请重试";
+      // 分类型处理错误
+      if (e is DioException) {
+        errorMsg = e.message ?? errorMsg;
+      } else if (e is TypeError) {
+        errorMsg = "数据解析错误：${e.toString()}";
+      } else {
+        errorMsg = "未知错误：${e.toString()}";
+      }
+      ToastUtils.showToast(context, errorMsg);
     }
   }
 

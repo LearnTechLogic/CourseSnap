@@ -15,4 +15,6 @@ class HttpConstants {
   static const String USER_UPDATE = "/user/update";
 
   static const String USER_APPLY = "/user/apply";
+
+  static const String USER_WAIT_LIST = "/user/wait/list";
 }

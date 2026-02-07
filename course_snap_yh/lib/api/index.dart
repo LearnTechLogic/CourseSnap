@@ -29,3 +29,9 @@ Future<UserInfo> userApplyAPI(Map<String, dynamic> user) async {
     await dioRequest.post(HttpConstants.USER_APPLY, data: user)
   );
 }
+
+Future<List<UserInfo>> userWaitListAPI() async {
+  return (await dioRequest.get(HttpConstants.USER_WAIT_LIST))
+    .map<UserInfo>((item) => UserInfo.fromJson(item))
+    .toList();
+}

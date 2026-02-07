@@ -45,10 +45,21 @@ class _MineViewState extends State<MineView> {
   }
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  
+  Widget _buildRefresh() {
+    return ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(Colors.red),
+        foregroundColor: MaterialStateProperty.all(Colors.white),
+      ),
+      onPressed: refreshData,
+      child: Text("刷新")
+    );
+  }
 
   Widget _buildHeader() {
     return Container(
-        padding: const EdgeInsets.only(left: 20, right: 40, top: 80, bottom: 20),
+        padding: const EdgeInsets.only(left: 20, right: 40, top: 20, bottom: 20),
         child: Row(
             children: [
               Expanded(
@@ -397,6 +408,7 @@ class _MineViewState extends State<MineView> {
           padding: const EdgeInsets.all(20),
           child: Column(
           children: [
+            _buildRefresh(),
             _buildHeader(),
             _buildDivider(),
             _buildBody(),

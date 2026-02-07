@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.util.List;
+
 @Mapper
 public interface UserMapper {
     @Select("select * from user_info where account=#{account} and password=#{password}")
@@ -26,4 +28,6 @@ public interface UserMapper {
     @Insert("update user_info set state=#{state} where account=#{account}")
     int applyUserInfo(int account, String state);
 
+    @Select("select * from user_info order by price desc, id asc ")
+    List<UserInfo> getWaitList();
 }

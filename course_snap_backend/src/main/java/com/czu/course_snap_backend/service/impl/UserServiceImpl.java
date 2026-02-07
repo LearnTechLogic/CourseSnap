@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -34,19 +35,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result register(UserInfo userInfo) {
         if (userMapper.getUserInfo(userInfo.getAccount()) != null) {
-            return Result.error("400", "用户已存在");
+            return Result.error("0", "用户已存在");
         }
         int i = userMapper.register(userInfo.getAccount(), userInfo.getPassword(), "仅注册");
         if (i == 1) {
             return Result.success();
         }
-        return Result.error("400", "注册失败");
+        return Result.error("0", "注册失败");
     }
     @Override
     public Result getUserInfo(int account) {
         UserInfo userInfo = userMapper.getUserInfo(account);
         if (userInfo == null) {
-            return Result.error("400", "用户不存在");
+            return Result.error("0", "用户不存在");
         }
         return Result.success(userInfo);
     }
@@ -59,7 +60,7 @@ public class UserServiceImpl implements UserService {
         if (i == 1) {
             return Result.success(userMapper.getUserInfo(userInfo.getAccount()));
         }
-        return Result.error("400", "更新失败");
+        return Result.error("0", "更新失败");
     }
     @Override
     public Result applyUserInfo(UserInfo userInfo) {
@@ -80,5 +81,13 @@ public class UserServiceImpl implements UserService {
             return Result.success(userInfo);
         }
         return Result.error("0", "申请失败");
+    }
+    @Override
+    public Result getWaitList() {
+        List<String> states = List.of("仅注册", "申请", "等待", "进行中", "未支付", "已支付", "拒绝");
+        List<UserInfo> userInfos = userMapper.getWaitList();
+        // 除去不在列表中的状态 使用迭代器的 remove 方法，安全移除
+        userInfos.removeIf(userInfo -> !states.contains(userInfo.getState()));
+        return Result.success(userInfos);
     }
 }

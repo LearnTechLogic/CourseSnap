@@ -57,4 +57,9 @@ public class UserInfoController {
         }
         return Result.error("0", "请先登录");
     }
+
+    @GetMapping("/wait/list")
+    public Result getWaitList() {
+        return userService.getWaitList();
+    }
 }

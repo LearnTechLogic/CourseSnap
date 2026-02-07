@@ -13,4 +13,6 @@ public interface UserService {
     Result updateUserInfo(UserInfo userInfo);
 
     Result applyUserInfo(UserInfo userInfo);
+
+    Result getWaitList();
 }

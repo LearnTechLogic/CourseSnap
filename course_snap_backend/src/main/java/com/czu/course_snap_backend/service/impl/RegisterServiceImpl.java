@@ -1,8 +1,6 @@
 package com.czu.course_snap_backend.service.impl;
 
-import com.czu.course_snap_backend.mapper.LoginMapper;
 import com.czu.course_snap_backend.mapper.RegisterMapper;
-import com.czu.course_snap_backend.pojo.Login;
 import com.czu.course_snap_backend.pojo.ManagerInfo;
 import com.czu.course_snap_backend.pojo.Result;
 import com.czu.course_snap_backend.service.RegisterService;

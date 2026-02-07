@@ -42,6 +42,13 @@ public class UserInfoController {
 
     @PostMapping("/update")
     public Result updateUserInfo(@RequestBody UserInfo userInfo) {
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        if (claims != null) {
+            int account = (int) claims.get("account");
+            if (account != userInfo.getAccount()) {
+                return Result.error("0", "请勿修改账号");
+            }
+        }
         return userService.updateUserInfo(userInfo);
     }
 

@@ -1,7 +1,6 @@
 package com.czu.course_snap_backend.controller;
 
 import com.czu.course_snap_backend.pojo.*;
-import com.czu.course_snap_backend.service.LoginService;
 import com.czu.course_snap_backend.service.ManagerService;
 import com.czu.course_snap_backend.service.ProfileService;
 import com.czu.course_snap_backend.service.RegisterService;
@@ -10,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.plaf.PanelUI;
 import java.util.Map;
 
 @Slf4j
@@ -18,30 +16,37 @@ import java.util.Map;
 @RequestMapping("/manager")
 public class ManagerInfoController {
     @Autowired
-    private ManagerService ManagerService;
+    private ManagerService managerService;
     @Autowired
     private ProfileService profileService;
-    @Autowired
-    private RegisterService registerService;
 
     @PostMapping("/login")
     public Result login(@RequestBody ManagerInfo managerInfo) {
         if (managerInfo.getAccount() <= 0 || managerInfo.getPassword() == null) {
             return Result.error("0", "请填写账号和密码");
         }
-//        return loginService.managerLogin(login);
-        return ManagerService.login(managerInfo);
+        return managerService.login(managerInfo);
     }
-
+    @PostMapping("/register")
+    public Result register(@RequestBody ManagerInfo managerInfo) {
+        return managerService.register(managerInfo);
+    }
     @GetMapping("/profile")
     public Result getManagerProfile() {
         Map<String, Object> claims = ThreadLocalUtil.get();
         if (claims != null) {
-            int account = (int) claims.get("id");
-            log.warn("获取用户信息,id:{},identity:{}", claims.get("id"), claims.get("identity"));
-            return profileService.getManagerProfile(account);
+            int account = (int) claims.get("account");
+            return managerService.getManagerProfile(account);
         }
-        log.warn("获取用户信息,未携带token");
+        return Result.error("0", "请先登录");
+    }
+    @GetMapping("/paid")
+    public Result getUserPaidList() {
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        if (claims != null) {
+            int account = (int) claims.get("account");
+            return managerService.getUserPaidList(account);
+        }
         return Result.error("0", "请先登录");
     }
     @GetMapping("/profile/list")
@@ -73,10 +78,7 @@ public class ManagerInfoController {
         return Result.error("0", "请先登录");
     }
 
-    @PostMapping("/register")
-    public Result register(@RequestBody ManagerInfo managerInfo) {
-        return registerService.managerRegister(managerInfo);
-    }
+
 
     @GetMapping("/user")
     public Result getUserProfile() {
@@ -161,14 +163,5 @@ public class ManagerInfoController {
         return profileService.updateAllocation(managerAccount, userAccount);
     }
 
-    @GetMapping("/paid")
-    public Result getUserPaid() {
-        Map<String, Object> claims = ThreadLocalUtil.get();
-        if (claims != null) {
-            int account = (int) claims.get("id");
-            return profileService.getUserPaid(account);
 
-        }
-        return Result.error("0", "请先登录");
-    }
 }

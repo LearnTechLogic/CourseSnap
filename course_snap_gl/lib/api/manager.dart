@@ -40,8 +40,3 @@ Future<bool> updateManagerAllocationAPI(int managerAccount, int userId) async {
   return true;
 }
 
-Future<List<UserInfo>> getUserPaidAPI() async {
-  return ((await dioRequest.get(HttpConstants.USER_PAID_LIST)) as List).map((item) {
-    return UserInfo.fromJson(item as Map<String, dynamic>);
-  }).toList();
-}

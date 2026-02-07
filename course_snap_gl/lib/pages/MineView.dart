@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../api/manager.dart';
+import '../api/user.dart';
 import '../pojo/ManagerInfo.dart';
 import '../stores/ManagerController.dart';
 import '../stores/TokenManager.dart';
@@ -34,17 +35,27 @@ class _MineViewState extends State<MineView> {
       print(e);
     }finally {
       isLoading = false;
-      setState(() {});
     }
   }
 
   void refreshData() async {
-    _getUsers();
+    await _getUsers();
+    setState(() {});
   }
 
+  Widget _buildRefresh() {
+    return ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(Colors.blue),
+        foregroundColor: MaterialStateProperty.all(Colors.white),
+      ),
+      onPressed: refreshData,
+      child: Text("刷新")
+    );
+  }
   Widget _buildHeader() {
     return Container(
-     padding: const EdgeInsets.only(left: 20, right: 40, top: 80, bottom: 20),
+     padding: const EdgeInsets.only(left: 20, right: 40, top: 20, bottom: 20),
       child: Row(
         children: [
           Expanded(
@@ -156,6 +167,8 @@ class _MineViewState extends State<MineView> {
       alignment: Alignment.center,
       child: Column(
         children: [
+          SizedBox(height: 20),
+          _buildRefresh(),
           _buildHeader(),
           // 创建分割线
           _buildDivider(),

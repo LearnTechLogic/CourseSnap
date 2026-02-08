@@ -18,3 +18,6 @@ mybatis:
     #开启了驼峰命名的开关
     map-underscore-to-camel-case: true
 #  mapper-locations: classpath:mapper/*.xml #指定mapper.xml文件的位置
+imgae:
+  base-url: D:/CourseSnap/photo/
+  photo-url: http://localhost:8080/photo/

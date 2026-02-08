@@ -2,7 +2,6 @@ package com.czu.course_snap_backend.controller;
 
 import com.czu.course_snap_backend.pojo.*;
 import com.czu.course_snap_backend.service.ManagerService;
-import com.czu.course_snap_backend.service.ProfileService;
 import com.czu.course_snap_backend.untils.ThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +15,6 @@ import java.util.Map;
 public class ManagerInfoController {
     @Autowired
     private ManagerService managerService;
-    @Autowired
-    private ProfileService profileService;
 
     @PostMapping("/login")
     public Result login(@RequestBody ManagerInfo managerInfo) {

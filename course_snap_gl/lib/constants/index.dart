@@ -1,5 +1,6 @@
 class GlobalConstants {
-  static const String BASE_URL = "http://localhost:8080/";
+  // static const String BASE_URL = "http://localhost:8080/";
+  static const String BASE_URL = "http://8.153.170.199:8082/";
   static const int TIME_OUT = 10;
   static const String SUCCESS = "1";
   static const String TOKEN = "course_snap_token";

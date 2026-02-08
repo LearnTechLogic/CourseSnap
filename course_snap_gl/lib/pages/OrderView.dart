@@ -65,7 +65,7 @@ class _OrderViewState extends State<OrderView> {
                 onPressed: () {
                   _pickImage(userInfo.account, 1);
                 },
-                child: Text("上传图片")
+                child: Text("上传图片1")
               )
             ],
           )
@@ -86,7 +86,7 @@ class _OrderViewState extends State<OrderView> {
                 onPressed: () {
                   _pickImage(userInfo.account, 2);
                 },
-                child: Text("上传图片")
+                child: Text("上传图片2")
               )
             ]
           )

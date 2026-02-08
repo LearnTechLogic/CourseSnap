@@ -25,7 +25,6 @@ public class ImageController {
         if (file == null) {
             return Result.error("0", "图片上传为空");
         }
-        log.warn("图片上传,用户:{},图片:{}", userAccount, imageNum);
         return imageService.uploadImage(new Image(Integer.parseInt(userAccount), Integer.parseInt(imageNum), file));
     }
 }

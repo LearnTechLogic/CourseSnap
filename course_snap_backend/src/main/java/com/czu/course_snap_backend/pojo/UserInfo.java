@@ -18,4 +18,5 @@ public class UserInfo {
     String image1;
     String image2;
     String token;
+    int managerId;
 }

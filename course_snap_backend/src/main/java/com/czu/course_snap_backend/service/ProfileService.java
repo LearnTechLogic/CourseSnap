@@ -5,7 +5,6 @@ import com.czu.course_snap_backend.pojo.Result;
 import com.czu.course_snap_backend.pojo.UserInfo;
 
 public interface ProfileService {
-    Result getManagerProfile(int account);
     Result getUserProfile(int identity, int account);
     Result getUserProfile(int account);
     Result updateUserProfile(UserInfo userInfo);
@@ -16,5 +15,4 @@ public interface ProfileService {
 
     Result updateAllocation(int managerAccount, int userId);
 
-    Result getUserPaid(int account);
 }

@@ -15,14 +15,6 @@ import java.util.List;
 public class ProfileServiceImpl implements ProfileService {
     @Autowired
     private ProfileMapper profileMapper;
-    @Override
-    public Result getManagerProfile(int account) {
-        ManagerInfo managerInfo = profileMapper.getManagerProfile(account);
-        if (managerInfo == null) {
-            return Result.error("0", "用户不存在");
-        }
-        return Result.success(managerInfo);
-    }
 
     @Override
     public Result getManagerProfileList(int identity) {
@@ -146,12 +138,5 @@ public class ProfileServiceImpl implements ProfileService {
             return Result.error("0", "更新失败");
         }
         return Result.success();
-    }
-
-    @Override
-    public Result getUserPaid(int account) {
-        List<UserInfo> userInfo = profileMapper.getUserProfile(account);
-        userInfo.removeIf(userInfo1 -> !"已支付".equals(userInfo1.getState()));
-        return Result.success(userInfo);
     }
 }

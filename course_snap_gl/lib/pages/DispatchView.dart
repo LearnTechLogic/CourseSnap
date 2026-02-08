@@ -34,10 +34,23 @@ class _DispatchViewState extends State<DispatchView> {
       for (var user in _userInfoList)
         DropdownMenuItem(
           value: user.account,
-          child: Text('学号：${user.account}\t姓名：${user.name}'),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 140,
+                child: Text("学号:${user.account}"),
+              ),
+              SizedBox(
+                width: 140,
+                child: Text("姓名:${user.name}")
+              ),
+              Text("价格:${user.price}")
+            ],
+          )
         )
     ];
   }
+
   Future<void> refreshData() async{
     await _getManagerInfoList();
     await _getUserInfoList();
@@ -45,6 +58,7 @@ class _DispatchViewState extends State<DispatchView> {
 
   Future<void> _changeManagerDetail(BuildContext context, int account) async {
     ManagerInfo managerInfo = await getManagerInfoByIdAPI(account);
+    final nameController = TextEditingController(text: managerInfo.name);
     final passwordController = TextEditingController(text: managerInfo.password);
     final identityController = TextEditingController(text: managerInfo.identity.toString());
     final updateManager = await showDialog<ManagerInfo>(
@@ -55,6 +69,13 @@ class _DispatchViewState extends State<DispatchView> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              TextField(
+                controller: nameController,
+                decoration: InputDecoration(
+                  hintText: '请输入管理员姓名',
+                  labelText: '姓名',
+                ),
+              ),
               TextField(
                 controller: passwordController,
                 decoration: InputDecoration(
@@ -74,6 +95,7 @@ class _DispatchViewState extends State<DispatchView> {
           actions: [
             TextButton(
               onPressed: () {
+                managerInfo.name = nameController.text;
                 managerInfo.password = passwordController.text;
                 managerInfo.identity = int.parse(identityController.text);
                 Navigator.of(context).pop(managerInfo);
@@ -96,30 +118,76 @@ class _DispatchViewState extends State<DispatchView> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('抢课信息'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (var user in userInfo)
-                Text('学号：${user.account}\t姓名：${user.name}\t状态：${user.state}'),
-              Text("添加人员"),
-              DropdownButtonFormField<int>(
-                items: _buildDropdownItems(),
-                onChanged: (int? value) async{
-                  if (value != null) {
-                   await updateManagerAllocationAPI(account, value);
-                   await refreshData();
-                   if (mounted) {
-                     Navigator.pop(context);
-                     ScaffoldMessenger.of(context).showSnackBar(
-                       const SnackBar(content: Text('分配成功！')),
-                     );
-                   }
-                  }
-                },
-              )
-            ]
-          )
+          title: const Text('抢课信息'),
+          // 优化：设置弹窗宽度，适配列表显示
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.8, // 占屏幕80%宽度
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // 关键：Column仅占最小高度
+              children: [
+                const Text("添加人员"),
+                // 优化：DropdownButtonFormField补充默认值、提示文字
+                DropdownButtonFormField<int>(
+                  hint: const Text('请选择分配的管理者ID'), // 提示文字
+                  value: null, // 默认值（可根据需求设置初始值）
+                  items: _buildDropdownItems(),
+                  onChanged: (int? value) async {
+                    if (value != null) {
+                      try {
+                        // 异步操作加异常捕获
+                        await updateManagerAllocationAPI(account, value);
+                        await refreshData();
+                        if (mounted) {
+                          Navigator.pop(context); // 关闭弹窗
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('分配成功！')),
+                          );
+                        }
+                      } catch (e) {
+                        // 接口调用失败时提示
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('分配失败：${e.toString()}')),
+                          );
+                        }
+                      }
+                    }
+                  },
+                ),
+                // 核心修正：给ListView固定高度，解决无界高度问题
+                const SizedBox(height: 8), // 间距，优化视觉
+                SizedBox(
+                  height: 200, // 固定ListView高度（可根据需求调整）
+                  child: ListView.separated(
+                    key: UniqueKey(), // 解决mouse_tracker异常
+                    physics: const ClampingScrollPhysics(), // 允许列表内部滚动
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        key: ValueKey(userInfo[index].account), // 唯一key，避免复用冲突
+                        title: Text(
+                          '学号：${userInfo[index].account}\t姓名：${userInfo[index].name}\t状态：${userInfo[index].state}',
+                          maxLines: 2, // 限制行数
+                          overflow: TextOverflow.ellipsis, // 文本溢出显示省略号
+                          style: const TextStyle(fontSize: 12), // 缩小字体，适配弹窗
+                        ),
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return Container(height: 2, width: double.infinity - 16, color: Colors.amber);
+                    },
+                    itemCount: userInfo.length,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // 补充：添加弹窗关闭按钮，优化交互
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('关闭'),
+            ),
+          ],
         );
       }
     );
@@ -171,6 +239,14 @@ class _DispatchViewState extends State<DispatchView> {
     );
   }
 
+  Widget _buildRefreshButton() {
+    return ElevatedButton(
+      onPressed: () async {
+        await refreshData();
+      },
+      child: Text('刷新'),
+    );
+  }
   @override
   void initState() {
     super.initState();
@@ -191,6 +267,8 @@ class _DispatchViewState extends State<DispatchView> {
           ),
           child: Column(
             children: [
+              _buildRefreshButton(),
+              const SizedBox(height: 10),
               _buildListItem()
             ],
           )

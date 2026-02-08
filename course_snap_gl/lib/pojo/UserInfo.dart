@@ -8,6 +8,7 @@ class UserInfo {
   String qq;
   String image1;
   String image2;
+  int managerId;
 
   UserInfo({
     required this.account,
@@ -19,6 +20,7 @@ class UserInfo {
     required this.qq,
     required this.image1,
     required this.image2,
+    required this.managerId,
   });
 
   factory UserInfo.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,7 @@ class UserInfo {
       qq: json['qq'] ?? '',
       image1: json['images1'] ?? '',
       image2: json['images2'] ?? '',
+      managerId: json['managerId'] ?? 0,
     );
   }
 }

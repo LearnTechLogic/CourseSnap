@@ -224,6 +224,8 @@ class _OrderViewState extends State<OrderView> {
                 userInfo.name = nameController.text.trim();
                 userInfo.password = passwordController.text.trim();
                 userInfo.state = stateController.text.trim();
+                userInfo.qq = qqController.text.trim();
+                userInfo.requirement = requirementController.text.trim();
                 if (_managerController.manager.value.identity == 1){
                   userInfo.price = int.parse(priceController.text.trim());
                 }
@@ -256,6 +258,28 @@ class _OrderViewState extends State<OrderView> {
   }
 
   Future<void> _deleteUser(BuildContext context, int account) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("提示"),
+          content: const Text("确定要删除该用户吗？"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text("取消"),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text("确定"),
+            )
+          ]
+        );
+      }
+    );
+    if (confirm == false) {
+      return;
+    }
     try {
       // 删除用户
       await deleteUserInfoAPI(account);
@@ -294,14 +318,24 @@ class _OrderViewState extends State<OrderView> {
             child: Row(
               children: [
                 Expanded(
-                  child: ListTile(
-                    selected: true,
-                    title: Text("学号：${_userList[index].account}"),
-                    subtitle: Text("姓名：${_userList[index].name}"),
-                    trailing: Text("状态：${_userList[index].state}"),
-                    onTap: () {
+                  child: ElevatedButton(
+                    onPressed: () {
                       _getUserDetail(context, _userList[index].account);
-                    }
+                    },
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 120,
+                          child: Text("学号：${_userList[index].account}"),
+                        ),
+                        SizedBox(
+                          width: 100,
+                          child: Text("姓名：${_userList[index].name}", style: TextStyle(fontSize: 12)),
+                        ),
+                        // Text("价格：${_userList[index].price}"),
+                        Text("状态：${_userList[index].state}", style: TextStyle(fontSize: 10)),
+                      ]
+                    )
                   )
                 ),
                 IconButton(
@@ -325,6 +359,15 @@ class _OrderViewState extends State<OrderView> {
     );
   }
 
+  Widget _buildRefreshButton() {
+    return ElevatedButton(
+      onPressed: () {
+        _getUserList();
+      },
+      child: const Text("刷新"),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -344,7 +387,9 @@ class _OrderViewState extends State<OrderView> {
         ),
         child: Column(
           children: [
-              _buildListItem()
+            _buildRefreshButton(),
+            const SizedBox(height: 10),
+            _buildListItem()
           ],
         )
       )

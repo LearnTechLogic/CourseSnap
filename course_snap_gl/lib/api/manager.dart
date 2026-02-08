@@ -22,21 +22,20 @@ Future<ManagerInfo> getManagerInfoByIdAPI(int account) async {
   );
 }
 
-Future<bool> updateManagerInfoAPI(ManagerInfo managerInfo) async {
+Future<void> updateManagerInfoAPI(ManagerInfo managerInfo) async {
   Map<String, dynamic> data = {
     "account": managerInfo.account,
     "name": managerInfo.name,
     "password": managerInfo.password,
     "identity": managerInfo.identity,
   };
-  return await dioRequest.post(HttpConstants.MANAGER_PROFILE_UPDATE, data: data);
+  await dioRequest.post(HttpConstants.MANAGER_PROFILE_UPDATE, data: data);
 }
 
-Future<bool> updateManagerAllocationAPI(int managerAccount, int userId) async {
+Future<void> updateManagerAllocationAPI(int managerAccount, int userId) async {
   await dioRequest.post(HttpConstants.MANAGER_ALLOCATION_UPDATE, data: {
     "managerAccount": managerAccount,
     "userAccount": userId
   });
-  return true;
 }
 
